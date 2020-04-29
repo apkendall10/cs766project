@@ -111,13 +111,19 @@ The performance achieved by the generator in the GAN network did not achieve bet
 
 
 
-Second, since the GAN generator is trained specifically to fool the GAN discriminator, it tended to produce image artifacts that fooled the discriminator, but did not actually improve the deblur process. We believe that additional training could help the discriminator discriminate between these artifacts and true sharp images.
+Second, since the GAN generator is trained specifically to fool the GAN discriminator, it tended to produce image artifacts that fooled the discriminator, but did not actually improve the deblur process. We believe that additional training could help the discriminator identify these artifacts, leading to positive pressure on the generator to not include them.
 
 ## Challenges
 
 One challenge in tuning the hyperparameters for the end-to-end network is that the training time on our current hardware is costly. It took 16 hours to train the end-to-end network over 2 iterations of 25,000 images. This time horizon increases the cost of experimenting with different hyperparameters or network architecture.
 
 ## Conclusion
+
+Our results show that learning based methods outperform non-learning based approaches. We also can see that end-to-end networks outperform blur prediction combined with other algorithms, especially in realistic situations where the blur kernel is not known.
+
+The biggest downside to end-to-end and learning based approaches is the amount of data required and the amount of training time needed. Even the performance time of evaluation can be significant in end-to-end methods. 
+
+In narrow situations like uniform blur
 
 ## References
 
