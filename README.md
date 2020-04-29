@@ -73,6 +73,7 @@ The performance of the end-to-end network was in line with both blind and CNN + 
 | 0.2615 | | | | | |
 | 1.4530 | | | | | |
 | 5.8059 | | | | | |
+
 Figure 1 The results of the three deblurring methods performed on 4 images
 
 
@@ -96,6 +97,7 @@ We used the blurry images as a baseline for SSIM and PSNR. We then compare our C
 |<img src= "phase2sample/results/true2.png"> |<img src= "phase2sample/results/blur2.png"> | | <img src= "phase2sample/results/unet2.png">| <img src= "phase2sample/results/gan2.png">|
 |<img src= "phase2sample/results/true3.png"> |<img src= "phase2sample/results/blur3.png"> | | <img src= "phase2sample/results/unet3.png">| <img src= "phase2sample/results/gan3.png">|
 |<img src= "phase2sample/results/true4.png"> |<img src= "phase2sample/results/blur4.png"> | | <img src= "phase2sample/results/unet4.png">| <img src= "phase2sample/results/gan4.png">|
+
 Figure 2 The results of the three deblurring methods performed on 4 images
 
 
