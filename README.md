@@ -5,7 +5,9 @@ Amos Kendall and Juan Rios
 
 Image blur is a pervasive problem in image capture. Noise from blurry images decreases the visual appeal of pictures, and makes computer vision algorithms less reliable. The challenge of blur recovery is a classic ill-posed problem, often modeled as
 
+<p align="center">
 B = K*I + N
+</p>
 
 Where B is the known blurred image, K is the blur kernel, I is the unknown true image, and N is unknown noise. The challenge is that a method must predict K, I, and N from a given example or set of examples [1].
 
