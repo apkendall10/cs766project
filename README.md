@@ -51,142 +51,63 @@ For the end to end network, we were able to use the same architecture as in phas
 
 We compare the performance of our methods using the mean PSNR and SSIM as our evaluation metrics. For each dataset, we used a test set that was unseen by the various learning algorithms.
 
-### phase I
+### Phase I
 We compare our non-learning baseline, with the CNN blur kernel estimator + RL, and the End to End Unet based approach. Note that blind deblur takes as input a guessed filter based on 1 sigma, which gives the best blind deblur performance based on our blur kernel distribution.
 
-Method
-PSNR
-SSIM
-Runtime on testset (s)
-Baseline blind deblur
-23.15
-0.7541
-182.44
-CNN + RL
-24.18
-0.7669
-72.19
-End to End UNET
-21.58
-0.7526
-781.67
+
+| Method | PSNR | SSIM |Runtime on testset (s) |
+|------|-----|-----| ----- |
+|Baseline blind deblur |23.15 | 0.7541| 182.44 |
+|CNN + RL |24.18 |0.7669 | 72.19 |
+|End to End UNET | 21.58| 0.7526| 781.67 |
+
 
 The CNN + RL achieved the best results for both SSIM and PSNR in the least amount of time. A 2-tailed t-test resulted in PSNR differences as statistically significant, while SSIM differences as not statistically significant. Nevertheless, the CNN + RL remains the best method for this setting. Additionally, the CNN is substantially better at recovering a kernel than blind deblur. We compare a kernel distance MSE of 0.02 for CNN + RL, to a MSE of 0.07 for blind deblur. 
 
 The performance of the end-to-end network was in line with both blind and CNN + RL methods. Subjectively, we believe it recovers an image that looks less blurry to the human eye especially for large sigma values. This is consistent with some criticism of PSNR as an accurate measure of deblur quality [12].
 
-Sigma Value
-Original Image
-Blurry Image
-Blind Deblur
- CNN + RL deblur
-UNET Deblur
-5.2110
 
-
-
-
-
-
-
-0.2615
-   
-
-
-
-
-
-1.4530
-   
-
-
-
-
-
-5.8059
-
-
-
-
-
+|Sigma Value |Original Image |Blurry Image |Blind Deblur | CNN + RL deblur |UNET Deblur|
+| ---------- | ------------- | ----------- | ----------- | --------------- | --------- |
+| 5.2110     | | | | | |
+| 0.2615 | | | | | |
+| 1.4530 | | | | | |
+| 5.8059 | | | | | |
 Figure 1 The results of the three deblurring methods performed on 4 images
 
 
-### phase II
+### Phase II
 
 We used the blurry images as a baseline for SSIM and PSNR. We then compare our CNN + RL + Stitching method to the Simple UNET and the GAN approach. Note that since we resized the images, and the blur was captured in a realistic way that was only present in small areas of the image, the blur to sharp baseline is actually quite high in regard to SSIM and PSNR.
 
-Method
-PSNR
-SSIM
-Runtime on testset (s)
-Blurry Baseline
-31.9200
-0.9574
-0
-CNN + RL + Stitching
+| Method | PNSR | SSIM |Runtime on testset (s) |
+|------|-----|-----| ----- |
+| Blurry Baseline    | 31.9200  |0.9574    | 0 |
+| CNN + RL + Stitching    |  | | |
+| UNET | 29.0705   | 0.9531 |2802.63 |
+| GAN |24.7497 |0.8800 |947.4906 |
 
 
 
 
-
-
-UNET
-29.0705
-0.9531
-2802.63
-GAN
-24.7497
-0.8800
-947.4906
-
-
-Sharp
-Blur
-CNN+Stitching
-UNET
-GAN
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+| sharp | blur | CNN + Sticthing | UNET | GAN|
+| ---- | ----| ---- | ----| ----|
+|<img src= "phase2sample/results/true1.png"> |<img src= "phase2sample/results/blur1.png"> | | <img src= "phase2sample/results/unet1.png">| <img src= "phase2sample/results/gan1.png">|
+|<img src= "phase2sample/results/true2.png"> |<img src= "phase2sample/results/blur2.png"> | | <img src= "phase2sample/results/unet2.png">| <img src= "phase2sample/results/gan2.png">|
+|<img src= "phase2sample/results/true3.png"> |<img src= "phase2sample/results/blur3.png"> | | <img src= "phase2sample/results/unet3.png">| <img src= "phase2sample/results/gan3.png">|
+|<img src= "phase2sample/results/true4.png"> |<img src= "phase2sample/results/blur4.png"> | | <img src= "phase2sample/results/unet4.png">| <img src= "phase2sample/results/gan4.png">|
 Figure 2 The results of the three deblurring methods performed on 4 images
 
 
 The performance achieved by the generator in the GAN network did not achieve better than the traditional UNET structure, but it did provide two interesting results. First, the performance continued to improve with additional training, suggesting that more training time could help close the gap. The table below shows the performance based on the number of training epochs, where each Epoch cycled through all 24000 training images.
 
-Training Epochs
-SSIM
-PSNR
-2
-0.7800
-21.7142
-3
-0.8011
-22.8159
-4
-0.8800
-24.7497
+| Training Epochs | SSIM | PNSR |
+|------|-----|-----|
+| 2    | 0.7800  |21.7142    |
+| 3    | 0.8011  | 22.8159  |
+| 4    | 0.8800   | 24.7497  |
+
+
 
 Second, since the GAN generator is trained specifically to fool the GAN discriminator, it tended to produce image artifacts that fooled the discriminator, but did not actually improve the deblur process. We believe that additional training could help the discriminator discriminate between these artifacts and true sharp images.
 
@@ -198,7 +119,7 @@ One challenge in tuning the hyperparameters for the end-to-end network is that t
 
 ## References
 
-[1] https://arxiv.org/pdf/1409.6838.pdf
+[1] <link>https://arxiv.org/pdf/1409.6838.pdf</link>
 [2] https://arxiv.org/ftp/arxiv/papers/1710/1710.00620.pdf
 [3] https://svs.gsfc.nasa.gov/2796
 [4] https://pdfs.semanticscholar.org/6121/aa87089eee8d85109b5a291cd1b39ebd2639.pdf
