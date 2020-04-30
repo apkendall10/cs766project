@@ -14,7 +14,8 @@ Where B is the known blurred image, K is the blur kernel, I is the unknown true 
 Fundamentally, there are two different types of blur problems - blind blur and non-blind blur. Blind blur is where the blur kernel, K, is not known a priori. Non-blind blur occurs when the blur kernel is known [2]. Blind blur problems are both more challenging and more common, and will be the focus of this project.
 
 ## Background
-Blur recovery is important because it can be used with popular consumer products like cameras or phones and can aid other tech and software initiatives. Additionally, deblurring is important in scientific applications. For example, in Astronomy image data of star systems is subject to blurring effects. Undoing these effects is important in creating more accurate results [3]. Another example is the use of delburring in medical imaging such as X-ray, mammographies, and ultrasound images for more accurate medical diagnosis [4].
+Blur recovery is important because it can be used with popular consumer products like cameras or phones and can aid other tech and software initiatives. Additionally, deblurring is important in scientific applications. For example, in Astronomy image data of star systems is subject to blurring effects. Undoing these effects is important in creating more accurate results [3]. Another example is the use of deblurring in medical imaging such as X-ray, mammographies, and ultrasound images for more accurate medical diagnosis [4].
+
 The classical approach to blind blur problems is to look at a single image and use probability based estimates to predict the true image. Typical methods include Bayesian Inference Frameworks, which find an optimal solution by maximizing a hypothesis based on given evidence. Another popular approach is to use regularization techniques such as Tikhonov-Miller regularization, which attempt to convert ill-posed problems to well-posed problems by constraining the solution space. Other methods include Homography-Based methods, Sparse Representation-Based methods, and Region-Based methods [1].
 
 With advances in computing power and refinement of neural network theory, especially deep, convolutional neural networks (CNN), there have been various attempts to use a collection of blurred images to learn more details of the problem. The key insight is that if some features of image blur are shared between different images, analyzing multiple images gives more information when trying to discover the unknowns, K, I and N. Initial approaches aimed to train a network to learn the blur kernel, K, from synthetic datasets where K would be known, but varied, to allow for a generalized learning of K. Examples include Schuler [5], who iteratively uses CNN to extract features and then estimate the kernel, and Sun [6] who uses a CNN to estimate motion blur vectors.
@@ -27,15 +28,34 @@ Our goal was to investigate how learning based approaches could be integrated wi
 
 ### Phase I
 
-Initially, we focused on a simple setting -  gaussian blur applied uniformly to the entire image. For our dataset, we used 25000 images from imagenet [10]. For testing and training, we applied a gaussian blur to these images. The gaussian blur standard deviation was drawn randomly from (the absolute value of) a normal distribution with mean 0 and sdv 5. 
+Initially, we focused on a simple setting -  gaussian blur applied uniformly to the entire image. For our initial dataset, we used 25000 images from imagenet [10]. For testing and training, we applied a blur to these images. The gaussian blur standard deviation (sigma) was drawn randomly from (the absolute value of) a normal distribution with mean 0 and sdv 5. 
 
 To determine a baseline for performance, the Maximum Likelihood algorithm is used for blind deconvolution, and the Richardson-Lucy (RL) algorithm was chosen for non-blind deconvolution. These are standard methods for non-blind and blind deblurring. Both algorithms are based on the Bayesian Inference Frameworks [1].
 
-We also developed two different neural network architectures. The first one takes a blurry image and predicts the blur kernel. Then we use the blur kernel to apply the non-blind RL algorithm. We refer to this method as CNN + RL.
+We also developed two different neural network architectures. The first one takes a blurry image and predicts the blur kernel. Then we use the blur kernel to apply the non-blind RL algorithm. Refer to this method as CNN + RL.
 
-To predict the gaussian blur kernel, we trained a CNN with 3 convolutional layers and 3 fully connected layers. The CNN was given a blurry image as input with a gaussian kernel size as the label to predict.
+To predict the gaussian blur kernel, we trained a CNN with 3 convolutional layers and 3 fully connected layers. The CNN was given a blurry image as input with a gaussian kernel size as a label.
 
 The second network is an end-to-end network that takes in the blurry image and produces a prediction of the true underlying image. This network is based on UNETs [11] commonly used for pixel segmentation. UNETs are a powerful method to learn a combination of abstract features and local details. They use convolutional layers (often called encoding) to build increasingly abstract feature maps, and then combine upsampling with the already generated less abstract feature maps to decode the learned features into an image. Our UNET architecture used 3 encoding and 3 decoding layers.
+
+### Phase I Results
+
+We compare the performance of our methods using the mean PSNR and SSIM as our evaluation metrics. For each dataset, we used a test set that was unseen by the various learning algorithms.
+
+The results compare our non-learning baseline, with the CNN blur kernel estimator + RL, and the End to End Unet based approach. Note that blind deblur takes as input a guessed filter based on 1 sigma, which gives the best blind deblur performance based on our blur kernel distribution. Additionally, the blind deblur method will output a recovered kernel.
+
+| Method | PSNR | SSIM |Runtime on testset (s) |
+|------|-----|-----| ----- |
+|Baseline blind deblur |23.15 | 0.7541| 182.44 |
+|CNN + RL |24.18 |0.7669 | 72.19 |
+|End to End UNET | 21.58| 0.7526| 781.67 |
+
+The CNN + RL achieved the best results for both SSIM and PSNR in the least amount of time. A 2-tailed t-test resulted in PSNR differences as statistically significant, while SSIM differences as not statistically significant. Nevertheless, the CNN + RL remains the best method for this setting. Additionally, the CNN is substantially better at recovering a kernel than blind deblur. We compare a kernel distance MSE of 0.02 for CNN + RL, to a MSE of 0.07 for blind deblur. 
+
+The performance of the end-to-end network was in line with both blind and CNN + RL methods. Subjectively, we believe it recovers an image that looks less blurry to the human eye especially for large sigma values. This is consistent with some criticism of PSNR as an accurate measure of deblur quality [13].
+
+<img src= "phase2sample/results/unet4.png">
+Figure 1 The results of the three deblurring methods performed on 4 images
 
 ### Phase II
 
@@ -52,29 +72,13 @@ For the end to end network, we were able to use the same architecture as in phas
 We compare the performance of our methods using the mean PSNR and SSIM as our evaluation metrics. For each dataset, we used a test set that was unseen by the various learning algorithms.
 
 ### Phase I
-We compare our non-learning baseline, with the CNN blur kernel estimator + RL, and the End to End Unet based approach. Note that blind deblur takes as input a guessed filter based on 1 sigma, which gives the best blind deblur performance based on our blur kernel distribution.
 
 
-| Method | PSNR | SSIM |Runtime on testset (s) |
-|------|-----|-----| ----- |
-|Baseline blind deblur |23.15 | 0.7541| 182.44 |
-|CNN + RL |24.18 |0.7669 | 72.19 |
-|End to End UNET | 21.58| 0.7526| 781.67 |
 
 
-The CNN + RL achieved the best results for both SSIM and PSNR in the least amount of time. A 2-tailed t-test resulted in PSNR differences as statistically significant, while SSIM differences as not statistically significant. Nevertheless, the CNN + RL remains the best method for this setting. Additionally, the CNN is substantially better at recovering a kernel than blind deblur. We compare a kernel distance MSE of 0.02 for CNN + RL, to a MSE of 0.07 for blind deblur. 
-
-The performance of the end-to-end network was in line with both blind and CNN + RL methods. Subjectively, we believe it recovers an image that looks less blurry to the human eye especially for large sigma values. This is consistent with some criticism of PSNR as an accurate measure of deblur quality [13].
 
 
-|Sigma Value |Original Image |Blurry Image |Blind Deblur | CNN + RL deblur |UNET Deblur|
-| ---------- | ------------- | ----------- | ----------- | --------------- | --------- |
-| 5.2110     | | | | | |
-| 0.2615 | | | | | |
-| 1.4530 | | | | | |
-| 5.8059 | | | | | |
 
-Figure 1 The results of the three deblurring methods performed on 4 images
 
 
 ### Phase II
