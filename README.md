@@ -55,7 +55,7 @@ The CNN + RL achieved the best results for both SSIM and PSNR in the least amoun
 The performance of the end-to-end network was in line with both blind and CNN + RL methods. Subjectively, we believe it recovers an image that looks less blurry to the human eye especially for large sigma values. This is consistent with some criticism of PSNR as an accurate measure of deblur quality [13].
 
 <img src= "PhaseI_figure1.PNG">
-Figure 1 The results of the three deblurring methods performed on 4 images
+Figure 1 The results of the three deblurring methods performed on 4 images.
 
 ### Phase II 
 
@@ -81,10 +81,10 @@ Results show the metrics of each approach compared to the sharp image. As a base
 The UNET performed the best overall in regards to SSIM, but lagged behind in PSNR. By visual observation the quality of the UNET is very good. The consistent performance of the UNET across phases highlights the flexibility of the end-to-end approach. We believe that this network architecture could be used successfully in any deblur learning setting.
 
 <img src= "PhaseII_figure2.PNG">
-Figure 2 The results of the three deblurring methods performed on 4 images
+Figure 2 The results of the three deblurring methods performed on 4 images.
 
 
-The performance achieved by the generator in the GAN network did not achieve better than the traditional UNET structure, but it did provide two interesting results. First, the performance continued to improve with additional training, suggesting that more training time could help close the gap. The table below shows the performance based on the number of training epochs, where each Epoch cycled through all 24000 training images.
+The GAN underperformed compared to the traditional UNET structure, but it did provide two interesting results. First, the performance continued to improve with additional training, suggesting that more training time could help close the gap. The table below shows the performance based on the number of training epochs, where each Epoch cycled through all 24000 training images.
 
 | Training Epochs | SSIM | PNSR |
 |------|-----|-----|
@@ -92,21 +92,27 @@ The performance achieved by the generator in the GAN network did not achieve bet
 | 3    | 0.8011  | 22.8159  |
 | 4    | 0.8800   | 24.7497  |
 
+Second, since the GAN generator is trained specifically to fool the GAN discriminator, it tended to produce image artifacts that fooled the discriminator, but did not actually improve the deblur process. We believe that additional training would help the discriminator discriminate between these artifacts and true sharp images.
 
+The performance of CNN + RL was comparable to the UNET with better PSNR and worse SSIM. This result was surprising because the CNN was trained to predict uniform gaussian blur, and the images had spatially varying and diverse types of blur. These results show that the assumption of localized blur is reasonable, and that various blur types can be modeled as gaussian.
 
-Second, since the GAN generator is trained specifically to fool the GAN discriminator, it tended to produce image artifacts that fooled the discriminator, but did not actually improve the deblur process. We believe that additional training could help the discriminator identify these artifacts, leading to positive pressure on the generator to not include them.
+The runtime was significantly higher than other methods for two reasons. First, the algorithm was applied to a full sized image instead of the smaller images used for the UNET and GAN. Second, for each image, the CNN had to predict 25 kernels, and the RL algorithm recovered 25 patches, multiplying the computational time. 
+
+Another difficulty arose from the RL algorithm when stitching the images together. The RL algorithm will produce a recovered image with very distinct artifacts that are present on the image edges. When the large image was reconstructed, the grid-like structure from these artifacts was clearly visible. To improve this, the image patch that is passed to the RL algorithm is slightly larger than the original patch predicted on. The resulting image patch is then cropped from this slightly larger patch, and used to reconstruct the larger image. This method provided a marginal increase in metrics, a substantial improvement in subjective visual quality, but at the cost of increased computational time.
+
 
 ## Challenges
 
-One challenge in tuning the hyperparameters for the end-to-end network is that the training time on our current hardware is costly. It took 16 hours to train the end-to-end network over 2 iterations of 25,000 images. This time horizon increases the cost of experimenting with different hyperparameters or network architecture.
+One challenge in tuning the hyperparameters for the end-to-end networks is that the training time on our current hardware is costly. It took 16 hours to train the end-to-end network over 2 iterations of 25,000 relatively small images. This time horizon increases the cost of experimenting with different hyperparameters, training image sets. and network architecture. This was especially clear with the GAN network, where we did not achieve convergence in performance.
 
 ## Conclusion
 
-Our results show that learning based methods outperform non-learning based approaches. We also can see that end-to-end networks outperform blur prediction combined with other algorithms, especially in realistic situations where the blur kernel is not known.
+Phase I shows the CNN + RL performs strongly in predicting the blur sigma for an image patch and is the best method for that setting. Phase II metrics for the recovered image were worse than the blurry baseline. This approach is limited to the deblurring capabilities of the RL algorithm and the scope of CNN training. For example, it requires prior knowledge of the kernel sigma. Thus the training set is limited to artificial blurs. Visually, the recovered images look sharper. But some of the artifacts left by the RL algorithm and the stitching method remain. Future work could include producing and training with natural datasets with varying blurs and known kernels, and exploring different metrics.
 
-The biggest downside to end-to-end and learning based approaches is the amount of data required and the amount of training time needed. Even the performance time of evaluation can be significant in end-to-end methods. 
+Our results also show that end-to-end methods can outperform non-learning based approaches and are likely to outperform blur prediction combined with other algorithms, especially in realistic situations where the blur kernel is not known. Further improvements can be made by longer training and more hyperparameter tuning, especially for the GAN network where the performance depends on both the generator and discriminator network performance.
 
-In narrow situations like uniform blur, there is space for faster algorithmic based methods.
+One downside to end-to-end and learning based approaches is the amount of data required and the amount of training time needed. Even the computational time of evaluation can be significant in end-to-end methods. In narrow situations like uniform blur, there is space for faster algorithmic based methods.
+
 
 ## References
 
