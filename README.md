@@ -54,7 +54,7 @@ The CNN + RL achieved the best results for both SSIM and PSNR in the least amoun
 
 The performance of the end-to-end network was in line with both blind and CNN + RL methods. Subjectively, we believe it recovers an image that looks less blurry to the human eye especially for large sigma values. This is consistent with some criticism of PSNR as an accurate measure of deblur quality [13].
 
-<img src= "phase2sample/results/unet4.png">
+<img src= "PhaseI_figure1.png">
 Figure 1 The results of the three deblurring methods performed on 4 images
 
 ### Phase II
