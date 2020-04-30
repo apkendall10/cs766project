@@ -79,7 +79,7 @@ Figure 1 The results of the three deblurring methods performed on 4 images
 
 ### Phase II
 
-We used the blurry images as a baseline for SSIM and PSNR. We then compare our CNN + RL + Stitching method to the Simple UNET and the GAN approach. Note that since we resized the images, and the blur was captured in a realistic way that was only present in small areas of the image, the blur to sharp baseline is actually quite high in regard to SSIM and PSNR.
+We used the blurry images as a baseline for SSIM and PSNR. We then compare our CNN + RL + Stitching method to the Simple UNET and the GAN approach. One surprising result was the high score for PNSR and SSIM for the blurry baseline. This is due to a pair of factors. First, since the blur was captured in a realistic way that was only present in small areas of the image, most of the blurry image was a perfect match with the sharp image. Second, since we resized the images both the sharp and blurry images result from an interpolation of neighboring pixels in the larger image, which reduces the difference between the two images.
 
 | Method | PNSR | SSIM |Runtime on testset (s) |
 |------|-----|-----| ----- |
@@ -91,7 +91,7 @@ We used the blurry images as a baseline for SSIM and PSNR. We then compare our C
 
 
 
-| sharp | blur | CNN + Sticthing | UNET | GAN|
+| sharp | blur | CNN + Stitching | UNET | GAN|
 | ---- | ----| ---- | ----| ----|
 |<img src= "phase2sample/results/true1.png"> |<img src= "phase2sample/results/blur1.png"> | | <img src= "phase2sample/results/unet1.png">| <img src= "phase2sample/results/gan1.png">|
 |<img src= "phase2sample/results/true2.png"> |<img src= "phase2sample/results/blur2.png"> | | <img src= "phase2sample/results/unet2.png">| <img src= "phase2sample/results/gan2.png">|
@@ -123,7 +123,7 @@ Our results show that learning based methods outperform non-learning based appro
 
 The biggest downside to end-to-end and learning based approaches is the amount of data required and the amount of training time needed. Even the performance time of evaluation can be significant in end-to-end methods. 
 
-In narrow situations like uniform blur
+In narrow situations like uniform blur, there is space for faster algorithmic based methods.
 
 ## References
 
