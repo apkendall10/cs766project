@@ -74,7 +74,7 @@ Results show the metrics of each approach compared to the sharp image. As a base
 | Method | PNSR | SSIM |Runtime on testset (s) |
 |------|-----|-----| ----- |
 | Blurry Baseline    | 31.9200  |0.9574    | 0 |
-| CNN + RL + Stitching    |  | | |
+| CNN + RL + Stitching    | 30.1536 | 0.9436 | 21900 |
 | UNET | 29.0705   | 0.9531 |2802.63 |
 | GAN |24.7497 |0.8800 |947.4906 |
 
