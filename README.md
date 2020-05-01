@@ -1,4 +1,4 @@
-# Convolutional Neural Networks in Gaussian Blur Deconvolution
+# Convolutional Neural Networks in Image Debluring
 Amos Kendall and Juan Rios
 
 ## Problem Statement
